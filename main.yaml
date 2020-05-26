@@ -99,7 +99,7 @@ Resources:
             nvm use v12.7.0
 
             # Download latest code, unzip it into /home/ec2-user/app
-            wget https://github.com/<username>/aws-bootstrap/archive/master.zip
+            wget https://github.com/samart/aws-bootstrap/archive/master.zip
             unzip master.zip
             mv aws-bootstrap-master app
 
@@ -112,8 +112,8 @@ Resources:
             npm start
           EOF
 
-          #chown ec2-user:ec2-user /tmp/install_script.sh && chmod a+x /tmp/install_script.sh
-          #sleep 1; su - ec2-user -c "/tmp/install_script.sh"
+          chown ec2-user:ec2-user /tmp/install_script.sh && chmod a+x /tmp/install_script.sh
+          sleep 1; su - ec2-user -c "/tmp/install_script.sh"
 
           # Signal to CloudFormation that the instance is ready
           /opt/aws/bin/cfn-signal -e $? --stack ${AWS::StackName} --region ${AWS::Region} --resource Instance
