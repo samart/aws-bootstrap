@@ -1,21 +1,23 @@
-version: 0.2
-
-phases:
-  install:
-    runtime-versions:
-      nodejs: 10
-  pre_build:
-    commands:
-      # run 'npm install' using versions in package-lock.json
-      - npm ci
-  build:
-    commands:
-      - npm run build
-artifacts:
-  files:
-    - start-service.sh
-    - stop-service.sh
-    - server.js
-    - package.json
-    - appspec.yml
-    - 'node_modules/**/*'
+version: 0.0
+os: linux
+files:
+  # unzip the build artifact in ~/app
+  - source: /
+    destination: /home/ec2-user/app/release
+permissions:
+  # change permissions from root to ec2-user
+  - object: /home/ec2-user/app/release
+    pattern: "**"
+    owner: ec2-user
+    group: ec2-user
+hooks:
+  ApplicationStart:
+    # start the application
+    - location: start-service.sh
+      timeout: 300
+      runas: ec2-user
+  ApplicationStop:
+    # stop the application
+    - location: stop-service.sh
+      timeout: 300
+      runas: ec2-user
