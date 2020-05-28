@@ -6,8 +6,23 @@ Parameters:
   EC2AMI:
     Type: 'AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>'
     Default: '/aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2'
+  SubDomain:
+    Type: String
+  Domain:
+    Type: String
 
 Resources:
+
+  DNS:
+    Type: AWS::Route53::RecordSet
+    Properties:
+      HostedZoneName: !Sub '${Domain}.'
+      Name: !Sub '${SubDomain}.${Domain}.'
+      Type: A
+      AliasTarget:
+        HostedZoneId: !GetAtt LoadBalancer.CanonicalHostedZoneID
+        DNSName: !GetAtt LoadBalancer.DNSName
+
   VPC:
     Type: AWS::EC2::VPC
     Properties:
@@ -299,8 +314,8 @@ Resources:
 Outputs:
 
   LBEndpoint1:
-    Description: The DNS name for the LB
-    Value: !Sub "http://${LoadBalancer.DNSName}:80"
+    Description: The DNS name for the stage
+    Value: !Sub "http://${DNS}"
 
   ScalingGroup:
     Description: The ScalingGroup for this stage

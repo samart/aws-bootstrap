@@ -5,6 +5,9 @@ Parameters:
     Type: String
   EC2AMI:
     Type: String
+  Domain:
+    Type: String
+
   GitHubOwner:
     Type: String
     Description: 'The username of the source GitHub repo.'
@@ -166,6 +169,10 @@ Resources:
       Parameters:
         EC2InstanceType: !Ref EC2InstanceType
         EC2AMI: !Ref EC2AMI
+        Domain: !Ref Domain
+        SubDomain: staging
+
+
 
   Prod:
     Type: AWS::CloudFormation::Stack
@@ -176,6 +183,8 @@ Resources:
       Parameters:
         EC2InstanceType: !Ref EC2InstanceType
         EC2AMI: !Ref EC2AMI
+        Domain: !Ref Domain
+        SubDomain: prod
 
 
   ProdDeploymentGroup:
