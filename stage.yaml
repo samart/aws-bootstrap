@@ -301,8 +301,6 @@ Outputs:
   LBEndpoint1:
     Description: The DNS name for the LB
     Value: !Sub "http://${LoadBalancer.DNSName}:80"
-    Export:
-      Name: LBEndpoint1
 
   ScalingGroup:
     Description: The ScalingGroup for this stage
