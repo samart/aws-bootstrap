@@ -3,9 +3,15 @@
 shopt -s expand_aliases
 alias aws='docker run --rm -it -v ~/.aws:/root/.aws -v $(pwd):/aws amazon/aws-cli'
 DOMAIN=evilcorp.cloud
+
 STACK_NAME=awsbootstrap
 REGION=us-east-1
 CLI_PROFILE=awsbootstrap
+
+CERT=$(aws acm list-certificates --region $REGION --profile awsbootstrap --output text --query "CertificateSummaryList[?DomainName=='$DOMAIN'].CertificateArn | [0]" --color off)
+echo "cert = $CERT"
+NEWCERT="arn:aws:acm:us-east-1:831820673277:certificate/d58b487d-683c-4914-89f0-6586d9b5a1ba"
+echo "new cert = $NEWCERT"
 
 EC2_INSTANCE_TYPE=t2.micro
 # shellcheck disable=SC2006
@@ -73,7 +79,9 @@ aws cloudformation deploy \
     GitHubRepo=$GH_REPO \
     GitHubBranch=$GH_BRANCH \
     GitHubPersonalAccessToken=$GH_ACCESS_TOKEN \
-    CodePipelineBucket=$CODEPIPELINE_BUCKET
+    CodePipelineBucket=$CODEPIPELINE_BUCKET \
+    Certificate=$NEWCERT
+
 
 # If the deploy succeeded, show the DNS name of the created instance
 if [ $? -eq 0 ]; then

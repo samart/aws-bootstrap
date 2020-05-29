@@ -8,6 +8,10 @@ Parameters:
   Domain:
     Type: String
 
+  Certificate:
+    Type: String
+    Description: 'An existing ACM certificate ARN for your domain'
+
   GitHubOwner:
     Type: String
     Description: 'The username of the source GitHub repo.'
@@ -171,6 +175,7 @@ Resources:
         EC2AMI: !Ref EC2AMI
         Domain: !Ref Domain
         SubDomain: staging
+        Certificate: !Ref Certificate
 
 
 
@@ -185,6 +190,7 @@ Resources:
         EC2AMI: !Ref EC2AMI
         Domain: !Ref Domain
         SubDomain: prod
+        Certificate: !Ref Certificate
 
 
   ProdDeploymentGroup:
@@ -199,18 +205,30 @@ Resources:
 
 
 Outputs:
+
   StagingLBEndpoint:
     Description: The DNS name for the staging LB
     Value: !GetAtt Staging.Outputs.LBEndpoint1
     Export:
       Name: StagingLBEndpoint
 
+  StagingHTTPSLBEndpoint:
+    Description: The DNS name for the staging HTTPS LB
+    Value: !GetAtt Staging.Outputs.HTTPSEndpoint
+    Export:
+      Name: StagingHTTPSLBEndpoint
 
   ProdLBEndpoint:
     Description: The DNS name for the prod LB
     Value: !GetAtt Prod.Outputs.LBEndpoint1
     Export:
       Name: ProdLBEndpoint
+
+  ProdHTTPSLBEndpoint:
+    Description: The DNS name for the prod HTTPS LB
+    Value: !GetAtt Prod.Outputs.HTTPSEndpoint
+    Export:
+      Name: ProdHTTPSLBEndpoint
 
 
 
